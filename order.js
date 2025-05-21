@@ -1,3 +1,18 @@
+// Konfigurasi Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDCBtr4zEH7plVgQYBMPl047i2NORIldQU",
+    authDomain: "icecream-d67cd.firebaseapp.com",
+    databaseURL: "https://icecream-d67cd-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "icecream-d67cd",
+    storageBucket: "icecream-d67cd.firebasestorage.app",
+    messagingSenderId: "1066026702728",
+    appId: "1:1066026702728:web:f801cef9350df99a390c3d"
+};
+
+// Inisialisasi Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
 // Inisialisasi keranjang belanja
 let cart = [];
 
@@ -67,18 +82,21 @@ function processOrder() {
         timestamp: new Date().toISOString()
     };
 
-    // Menyimpan pesanan ke localStorage
-    const orders = JSON.parse(localStorage.getItem('orders')) || [];
-    orders.push(order);
-    localStorage.setItem('orders', JSON.stringify(orders));
+    // Simpan pesanan ke Firebase
+    database.ref('orders').push(order)
+        .then(() => {
+            // Reset keranjang dan form
+            cart = [];
+            updateCartDisplay();
+            document.getElementById('customer-name').value = '';
+            document.getElementById('special-notes').value = '';
 
-    // Reset keranjang dan form
-    cart = [];
-    updateCartDisplay();
-    document.getElementById('customer-name').value = '';
-    document.getElementById('special-notes').value = '';
-
-    alert('Pesanan berhasil dibuat! Silakan tunggu konfirmasi dari admin.');
+            alert('Pesanan berhasil dibuat! Silakan tunggu konfirmasi dari admin.');
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat memproses pesanan. Silakan coba lagi.');
+        });
 }
 
 // Event Listeners

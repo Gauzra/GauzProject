@@ -145,7 +145,25 @@
         <p>© 2025 17'IceCream Developed by Gauz RA</p>
     </footer>
 
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
     <script>
+        // Konfigurasi Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDCBtr4zEH7plVgQYBMPl047i2NORIldQU",
+            authDomain: "icecream-d67cd.firebaseapp.com",
+            databaseURL: "https://icecream-d67cd-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "icecream-d67cd",
+            storageBucket: "icecream-d67cd.firebasestorage.app",
+            messagingSenderId: "1066026702728",
+            appId: "1:1066026702728:web:f801cef9350df99a390c3d"
+        };
+
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         // Cek status login
         if (!localStorage.getItem('adminLoggedIn')) {
             window.location.href = 'admin-login.html';
@@ -157,86 +175,83 @@
             window.location.href = 'admin-login.html';
         }
 
-        // Fungsi untuk memuat pesanan dari localStorage
+        // Fungsi untuk memuat pesanan dari Firebase
         function loadOrders() {
-            const orders = JSON.parse(localStorage.getItem('orders')) || [];
             const orderList = document.getElementById('orderList');
             orderList.innerHTML = '';
 
-            orders.forEach((order, index) => {
-                const orderCard = document.createElement('div');
-                orderCard.className = 'order-card';
-                orderCard.innerHTML = `
-                    <div class="order-header">
-                        <h3>Pesanan #${index + 1}</h3>
-                        <span class="order-status status-${order.status}">${order.status}</span>
-                    </div>
-                    <div class="order-info">
-                        <div class="customer-name">
-                            <strong>Nama Pelanggan:</strong> ${order.customerName}
-                        </div>
-                        <div class="order-date">
-                            <strong>Tanggal Pesanan:</strong> ${new Date(order.timestamp).toLocaleString('id-ID', {
-                                weekday: 'long',
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                            })}
-                        </div>
-                    </div>
-                    <div class="order-items">
-                        ${order.items.map(item => `
-                            <div class="order-item">
-                                <span>${item.name} (${item.size || 'Regular'})</span>
-                                <span>Rp ${item.price}</span>
+            database.ref('orders').on('value', (snapshot) => {
+                const orders = snapshot.val();
+                if (orders) {
+                    Object.entries(orders).forEach(([key, order]) => {
+                        const orderCard = document.createElement('div');
+                        orderCard.className = 'order-card';
+                        orderCard.innerHTML = `
+                            <div class="order-header">
+                                <h3>Pesanan #${key}</h3>
+                                <span class="order-status status-${order.status}">${order.status}</span>
                             </div>
-                        `).join('')}
-                    </div>
-                    <div class="order-total">
-                        <strong>Total: Rp ${order.total}</strong>
-                    </div>
-                    ${order.notes ? `<p><strong>Catatan:</strong> ${order.notes}</p>` : ''}
-                    <div class="order-actions">
-                        ${order.status === 'pending' ? `
-                            <button class="btn btn-accept" onclick="updateOrderStatus(${index}, 'processing')">Terima Pesanan</button>
-                            <button class="btn btn-reject" onclick="updateOrderStatus(${index}, 'rejected')">Tolak Pesanan</button>
-                        ` : ''}
-                        ${order.status === 'processing' ? `
-                            <button class="btn btn-complete" onclick="updateOrderStatus(${index}, 'completed')">Selesaikan Pesanan</button>
-                        ` : ''}
-                        <button class="btn btn-delete" onclick="deleteOrder(${index})">Hapus Pesanan</button>
-                    </div>
-                `;
-                orderList.appendChild(orderCard);
+                            <div class="order-info">
+                                <div class="customer-name">
+                                    <strong>Nama Pelanggan:</strong> ${order.customerName}
+                                </div>
+                                <div class="order-date">
+                                    <strong>Tanggal Pesanan:</strong> ${new Date(order.timestamp).toLocaleString('id-ID', {
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </div>
+                            </div>
+                            <div class="order-items">
+                                ${order.items.map(item => `
+                                    <div class="order-item">
+                                        <span>${item.name} (${item.size || 'Regular'})</span>
+                                        <span>Rp ${item.price}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="order-total">
+                                <strong>Total: Rp ${order.total}</strong>
+                            </div>
+                            ${order.notes ? `<p><strong>Catatan:</strong> ${order.notes}</p>` : ''}
+                            <div class="order-actions">
+                                ${order.status === 'pending' ? `
+                                    <button class="btn btn-accept" onclick="updateOrderStatus('${key}', 'processing')">Terima Pesanan</button>
+                                    <button class="btn btn-reject" onclick="updateOrderStatus('${key}', 'rejected')">Tolak Pesanan</button>
+                                ` : ''}
+                                ${order.status === 'processing' ? `
+                                    <button class="btn btn-complete" onclick="updateOrderStatus('${key}', 'completed')">Selesaikan Pesanan</button>
+                                ` : ''}
+                            </div>
+                        `;
+                        orderList.appendChild(orderCard);
+                    });
+                }
             });
         }
 
         // Fungsi untuk memperbarui status pesanan
-        function updateOrderStatus(orderIndex, newStatus) {
-            const orders = JSON.parse(localStorage.getItem('orders')) || [];
-            orders[orderIndex].status = newStatus;
-            localStorage.setItem('orders', JSON.stringify(orders));
-            loadOrders();
-        }
-
-        // Fungsi untuk menghapus pesanan
-        function deleteOrder(orderIndex) {
-            if (confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
-                const orders = JSON.parse(localStorage.getItem('orders')) || [];
-                orders.splice(orderIndex, 1);
-                localStorage.setItem('orders', JSON.stringify(orders));
-                loadOrders();
-            }
+        function updateOrderStatus(orderKey, newStatus) {
+            database.ref(`orders/${orderKey}`).update({
+                status: newStatus
+            });
         }
 
         // Fungsi untuk membersihkan semua pesanan
         function clearAllOrders() {
             if (confirm('Apakah Anda yakin ingin menghapus semua pesanan? Tindakan ini tidak dapat dibatalkan.')) {
-                localStorage.removeItem('orders');
-                loadOrders();
-                alert('Semua pesanan telah dibersihkan!');
+                database.ref('orders').remove()
+                    .then(() => {
+                        alert('Semua pesanan telah dibersihkan!');
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat membersihkan pesanan.');
+                    });
             }
         }
 
