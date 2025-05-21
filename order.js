@@ -99,6 +99,13 @@ function processOrder() {
         });
 }
 
+// Fungsi untuk menyaring item menu berdasarkan kategori
+function filterMenuItems(category) {
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.style.display = item.dataset.category === category ? 'flex' : 'none';
+    });
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
     // Menangani klik tombol kategori
@@ -108,9 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.add('active');
             
             const category = btn.dataset.category;
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.style.display = item.dataset.category === category ? 'flex' : 'none';
-            });
+            filterMenuItems(category); // Panggil fungsi filter saat tombol diklik
         });
     });
 
@@ -153,4 +158,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Menangani klik tombol checkout
     document.querySelector('.checkout-btn').addEventListener('click', processOrder);
+
+    // Panggil fungsi filter untuk kategori aktif saat halaman dimuat
+    const initialCategoryBtn = document.querySelector('.category-btn.active');
+    if (initialCategoryBtn) {
+        filterMenuItems(initialCategoryBtn.dataset.category);
+    }
 }); 

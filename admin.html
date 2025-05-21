@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - 17' ICE CREAM</title>
+    <title>Admin aja ye - 17' ICE CREAM</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .admin-container {
@@ -124,7 +124,7 @@
         <nav>
             <a href="about.html">Tentang Kami</a>
             <a href="order.html">Pesanan</a>
-            <a href="admin.html" class="active">Admin Panel</a>
+            <a href="admin.html" class="active">Admin aja ye</a>
             <button onclick="logout()" class="logout-btn">Logout</button>
         </nav>
     </header>
@@ -178,60 +178,101 @@
         // Fungsi untuk memuat pesanan dari Firebase
         function loadOrders() {
             const orderList = document.getElementById('orderList');
-            orderList.innerHTML = '';
+            // Hapus listener sebelumnya jika ada
+            database.ref('orders').off();
 
-            database.ref('orders').on('value', (snapshot) => {
-                const orders = snapshot.val();
-                if (orders) {
-                    Object.entries(orders).forEach(([key, order]) => {
-                        const orderCard = document.createElement('div');
-                        orderCard.className = 'order-card';
-                        orderCard.innerHTML = `
-                            <div class="order-header">
-                                <h3>Pesanan #${key}</h3>
-                                <span class="order-status status-${order.status}">${order.status}</span>
-                            </div>
-                            <div class="order-info">
-                                <div class="customer-name">
-                                    <strong>Nama Pelanggan:</strong> ${order.customerName}
-                                </div>
-                                <div class="order-date">
-                                    <strong>Tanggal Pesanan:</strong> ${new Date(order.timestamp).toLocaleString('id-ID', {
-                                        weekday: 'long',
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                    })}
-                                </div>
-                            </div>
-                            <div class="order-items">
-                                ${order.items.map(item => `
-                                    <div class="order-item">
-                                        <span>${item.name} (${item.size || 'Regular'})</span>
-                                        <span>Rp ${item.price}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <div class="order-total">
-                                <strong>Total: Rp ${order.total}</strong>
-                            </div>
-                            ${order.notes ? `<p><strong>Catatan:</strong> ${order.notes}</p>` : ''}
-                            <div class="order-actions">
-                                ${order.status === 'pending' ? `
-                                    <button class="btn btn-accept" onclick="updateOrderStatus('${key}', 'processing')">Terima Pesanan</button>
-                                    <button class="btn btn-reject" onclick="updateOrderStatus('${key}', 'rejected')">Tolak Pesanan</button>
-                                ` : ''}
-                                ${order.status === 'processing' ? `
-                                    <button class="btn btn-complete" onclick="updateOrderStatus('${key}', 'completed')">Selesaikan Pesanan</button>
-                                ` : ''}
-                            </div>
-                        `;
-                        orderList.appendChild(orderCard);
-                    });
-                }
+            // Listen for new orders being added
+            database.ref('orders').on('child_added', (snapshot) => {
+                const orderKey = snapshot.key;
+                const order = snapshot.val();
+                appendOrderCard(orderKey, order);
             });
+
+            // Listen for changes to existing orders (e.g., status updates)
+            database.ref('orders').on('child_changed', (snapshot) => {
+                const orderKey = snapshot.key;
+                const order = snapshot.val();
+                updateOrderCard(orderKey, order);
+            });
+
+            // Listen for orders being removed
+            database.ref('orders').on('child_removed', (snapshot) => {
+                const orderKey = snapshot.key;
+                removeOrderCard(orderKey);
+            });
+        }
+
+        // Helper function to create and append an order card
+        function appendOrderCard(key, order) {
+            const orderList = document.getElementById('orderList');
+            const orderCard = document.createElement('div');
+            orderCard.className = 'order-card';
+            orderCard.setAttribute('data-order-key', key);
+            orderCard.innerHTML = renderOrderCard(key, order);
+            orderList.appendChild(orderCard);
+        }
+
+        // Helper function to update an existing order card
+        function updateOrderCard(key, order) {
+            const orderCard = document.querySelector(`.order-card[data-order-key="${key}"]`);
+            if (orderCard) {
+                orderCard.innerHTML = renderOrderCard(key, order);
+            }
+        }
+
+        // Helper function to remove an order card
+        function removeOrderCard(key) {
+            const orderCard = document.querySelector(`.order-card[data-order-key="${key}"]`);
+            if (orderCard) {
+                orderCard.remove();
+            }
+        }
+
+        // Helper function to render the inner HTML of an order card
+        function renderOrderCard(key, order) {
+            return `
+                <div class="order-header">
+                    <h3>Pesanan #${key}</h3>
+                    <span class="order-status status-${order.status}">${order.status}</span>
+                </div>
+                <div class="order-info">
+                    <div class="customer-name">
+                        <strong>Nama Pelanggan:</strong> ${order.customerName}
+                    </div>
+                    <div class="order-date">
+                        <strong>Tanggal Pesanan:</strong> ${new Date(order.timestamp).toLocaleString('id-ID', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}
+                    </div>
+                </div>
+                <div class="order-items">
+                    ${order.items.map(item => `
+                        <div class="order-item">
+                            <span>${item.name} (${item.size || 'Regular'})</span>
+                            <span>Rp ${item.price}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="order-total">
+                    <strong>Total: Rp ${order.total}</strong>
+                </div>
+                ${order.notes ? `<p><strong>Catatan:</strong> ${order.notes}</p>` : ''}
+                <div class="order-actions">
+                    ${order.status === 'pending' ? `
+                        <button class="btn btn-accept" onclick="updateOrderStatus('${key}', 'processing')">Terima Pesanan</button>
+                        <button class="btn btn-reject" onclick="updateOrderStatus('${key}', 'rejected')">Tolak Pesanan</button>
+                    ` : ''}
+                    ${order.status === 'processing' ? `
+                        <button class="btn btn-complete" onclick="updateOrderStatus('${key}', 'completed')">Selesaikan Pesanan</button>
+                    ` : ''}
+                    <button class="btn btn-delete" onclick="deleteOrder('${key}')">Hapus Pesanan</button>
+                </div>
+            `;
         }
 
         // Fungsi untuk memperbarui status pesanan
@@ -239,6 +280,20 @@
             database.ref(`orders/${orderKey}`).update({
                 status: newStatus
             });
+        }
+
+        // Fungsi untuk menghapus pesanan
+        function deleteOrder(orderKey) {
+            if (confirm('Apakah Anda yakin ingin menghapus pesanan ini?')) {
+                database.ref(`orders/${orderKey}`).remove()
+                    .then(() => {
+                        alert('Pesanan berhasil dihapus!');
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat menghapus pesanan.');
+                    });
+            }
         }
 
         // Fungsi untuk membersihkan semua pesanan
