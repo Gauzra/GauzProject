@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - 17' ICE CREAM</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .input-group label {
+            font-weight: bold;
+        }
+        .input-group input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .login-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login-btn:hover {
+            background: #218838;
+        }
+        .error-message {
+            color: #dc3545;
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            🍦 <span>17' ICE CREAM</span>
+        </div>
+        <nav>
+            <a href="about.html">Tentang Kami</a>
+            <a href="order.html">Pesanan</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <h2>Admin Login</h2>
+            <form class="login-form" id="loginForm">
+                <div class="input-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+                <div id="errorMessage" class="error-message">
+                    Username atau password salah!
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 17'IceCream Developed by Gauz RA</p>
+    </footer>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Ganti dengan kredensial yang Anda inginkan
+            if (username === 'admin' && password === 'admin123') {
+                // Simpan status login
+                localStorage.setItem('adminLoggedIn', 'true');
+                // Redirect ke halaman admin
+                window.location.href = 'admin.html';
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>17' ICE CREAM</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      🍦 <span>17' ICE CREAM</span>
+    </div>
+    <nav>
+      <a href="about.html">Tentang Kami</a>
+      <a href="order.html">Pesanan</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="menu-section">
+      <h2>Ice Cream Menu 🍨</h2>
+      <div class="menu-items">
+        <div class="menu-card">
+          <img src="./images/chocolate.jpg" alt="Chocolate Ice Cream">
+          <div class="info">
+            <h3>Chocolate</h3>
+            <p>With Toppings +5K</p>
+            <div class="sizes">
+              <button class="size-btn">Medium</button>
+              <button class="size-btn">Large</button>
+            </div>
+            <p class="price">10K / 15K</p>
+            <button class="cart-btn">🛒</button>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <img src="./images/strawberry.jpg" alt="Strawberry Ice Cream">
+          <div class="info">
+            <h3>Strawberry</h3>
+            <p>With Toppings +5K</p>
+            <div class="sizes">
+              <button class="size-btn">Medium</button>
+              <button class="size-btn">Large</button>
+            </div>
+            <p class="price">10K / 15K</p>
+            <button class="cart-btn">🛒</button>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <img src="./images/vanilla.jpg" alt="Vanilla Ice Cream">
+          <div class="info">
+            <h3>Vanilla</h3>
+            <p>With Toppings +5K</p>
+            <div class="sizes">
+              <button class="size-btn">Medium</button>
+              <button class="size-btn">Large</button>
+            </div>
+            <p class="price">10K / 15K</p>
+            <button class="cart-btn">🛒</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="special-menu">
+      <h2>Special Menu</h2>
+      <img src="./images/special.jpg" alt="Special Ice Cream">
+      <p class="special-price">25K</p>
+      <button class="cart-btn">🛒</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Ice Brew by Gauz RA</p>
+  </footer>
+  <script src="navigation.js"></script>
+  <script>
+    document.querySelectorAll('.size-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        // Hapus class selected dari semua tombol dalam grup yang sama
+        const parentDiv = this.closest('.sizes');
+        parentDiv.querySelectorAll('.size-btn').forEach(btn => {
+          btn.classList.remove('selected');
+        });
+        // Tambahkan class selected ke tombol yang diklik
+        this.classList.add('selected');
+      });
+    });
+
+    // Fungsi untuk menangani klik keranjang
+    document.querySelectorAll('.cart-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const menuCard = this.closest('.menu-card');
+        const selectedSize = menuCard.querySelector('.size-btn.selected');
+        
+        if (!selectedSize) {
+          alert('Silakan pilih ukuran terlebih dahulu');
+          return;
+        }
+
+        // Simpan data pesanan ke localStorage
+        const itemName = menuCard.querySelector('h3').textContent;
+        const size = selectedSize.textContent;
+        const price = size === 'Medium' ? 10000 : 15000;
+        
+        const orderData = {
+          name: itemName,
+          size: size,
+          price: price
+        };
+        
+        localStorage.setItem('currentOrder', JSON.stringify(orderData));
+        
+        // Redirect ke halaman pesanan
+        window.location.href = 'order.html';
+      });
+    });
+  </script>
+</body>
+</html>

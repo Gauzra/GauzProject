@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pesanan - 17' ICE CREAM</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      🍦 <span>17' ICE CREAM</span>
+    </div>
+    <nav>
+      <a href="about.html">Tentang Kami</a>
+      <a href="order.html" class="active">Pesanan</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="order-section">
+      <div class="order-container">
+        <div class="order-header">
+          <h1>Pesanan Anda</h1>
+          <p class="subtitle">Pilih menu favorit Anda</p>
+        </div>
+
+        <div class="order-content">
+          <div class="menu-selection">
+            <h2>Menu Tersedia</h2>
+            <div class="menu-categories">
+              <button class="category-btn active" data-category="ice-cream">Ice Cream</button>
+              <button class="category-btn" data-category="drink">Drink</button>
+              <button class="category-btn" data-category="snack">Snack Menu</button>
+              <button class="category-btn" data-category="special">Special Menu</button>
+            </div>
+
+            <div class="menu-items">
+              <!-- Ice Cream Items -->
+              <div class="menu-item" data-category="ice-cream">
+                <img src="./images/chocolate.jpg" alt="Chocolate Ice Cream">
+                <div class="item-info">
+                  <h3>Chocolate Ice Cream</h3>
+                  <div class="size-options">
+                    <button class="size-btn" data-price="10000">Medium - 10K</button>
+                    <button class="size-btn" data-price="15000">Large - 15K</button>
+                  </div>
+                  <button class="add-to-cart">+ Tambah ke Keranjang</button>
+                </div>
+              </div>
+
+              <div class="menu-item" data-category="ice-cream">
+                <img src="./images/strawberry.jpg" alt="Strawberry Ice Cream">
+                <div class="item-info">
+                  <h3>Strawberry Ice Cream</h3>
+                  <div class="size-options">
+                    <button class="size-btn" data-price="10000">Medium - 10K</button>
+                    <button class="size-btn" data-price="15000">Large - 15K</button>
+                  </div>
+                  <button class="add-to-cart">+ Tambah ke Keranjang</button>
+                </div>
+              </div>
+
+              <div class="menu-item" data-category="ice-cream">
+                <img src="./images/vanilla.jpg" alt="Vanilla Ice Cream">
+                <div class="item-info">
+                  <h3>Vanilla Ice Cream</h3>
+                  <div class="size-options">
+                    <button class="size-btn" data-price="10000">Medium - 10K</button>
+                    <button class="size-btn" data-price="15000">Large - 15K</button>
+                  </div>
+                  <button class="add-to-cart">+ Tambah ke Keranjang</button>
+                </div>
+              </div>
+
+              <!-- Drink Items -->
+              <div class="menu-item" data-category="drink">
+                <img src="./images/ColdBrew.jpg" alt="ColdBrew">
+                <div class="item-info">
+                  <h3>ColdBrew</h3>
+                  <div class="size-options">
+                    <button class="size-btn selected" data-price="18000">18K</button>
+                  </div>
+                  <button class="add-to-cart">+ Tambah ke Keranjang</button>
+                </div>
+              </div>
+              <div class="menu-item" data-category="drink">
+                <img src="./images/Ice Chocolate.jpg" alt="Ice Chocolate">
+                <div class="item-info">
+                  <h3>Ice Chocolate</h3>
+                  <div class="size-options">
+                    <button class="size-btn" data-price="10000">Medium - 10K</button>
+                    <button class="size-btn" data-price="15000">Large - 15K</button>
+                  </div>
+                  <button class="add-to-cart">+ Tambah ke Keranjang</button>
+                </div>
+              </div>
+              <div class="menu-item" data-category="drink">
+                <img src="./images/Matcha.jpg" alt="Matcha">
+                <div class="item-info">
+                  <h3>Matcha</h3>
+                  <div class="size-options">
+                    <button class="size-btn" data-price="10000">Medium - 10K</button>
+                    <button class="size-btn" data-price="15000">Large - 15K</button>
+                  </div>
+                  <button class="add-to-cart">+ Tambah ke Keranjang</button>
+                </div>
+              </div>
+              <div class="menu-item" data-category="drink">
+                <img src="./images/Redvelvet.jpg" alt="Redvelvet">
+                <div class="item-info">
+                  <h3>Redvelvet</h3>
+                  <div class="size-options">
+                    <button class="size-btn" data-price="10000">Medium - 10K</button>
+                    <button class="size-btn" data-price="15000">Large - 15K</button>
+                  </div>
+                  <button class="add-to-cart">+ Tambah ke Keranjang</button>
+                </div>
+              </div>
+
+              <!-- Special Menu -->
+              <div class="menu-item" data-category="special">
+                <img src="./images/Special.jpg" alt="Special Menu">
+                <div class="item-info">
+                  <h3>Special Menu</h3>
+                  <div class="size-options">
+                    <button class="size-btn" data-price="25000">Special - 25K</button>
+                  </div>
+                  <button class="add-to-cart">+ Tambah ke Keranjang</button>
+                </div>
+              </div>
+              <!-- New Special Menu Item: Ice Croffle -->
+              <div class="menu-item" data-category="special">
+                <img src="./images/Ice Croffle.png" alt="Ice Croffle">
+                <div class="item-info">
+                  <h3>Ice Croffle</h3>
+                  <div class="size-options">
+                    <button class="size-btn" data-price="20000">20K</button>
+                  </div>
+                  <button class="add-to-cart">+ Tambah ke Keranjang</button>
+                </div>
+              </div>
+
+              <!-- Snack Menu Items -->
+              <div class="menu-item" data-category="snack">
+                <img src="./images/Croffle.jpg" alt="Croffle">
+                <div class="item-info">
+                  <h3>Croffle</h3>
+                  <p>3 pcs</p>
+                  <button class="add-to-cart" data-price="10000">+ Tambah ke Keranjang (10K)</button>
+                </div>
+              </div>
+              <div class="menu-item" data-category="snack">
+                <img src="./images/chesee cake.jpg" alt="Cheesecake">
+                <div class="item-info">
+                  <h3>Cheesecake</h3>
+                  <button class="add-to-cart" data-price="20000">+ Tambah ke Keranjang (20K)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cart-section">
+            <h2>Keranjang Belanja</h2>
+            <div class="cart-items">
+              <!-- Cart items will be added here dynamically -->
+            </div>
+            <div class="cart-summary">
+              <div class="total">
+                <span>Total:</span>
+                <span class="amount">Rp 0</span>
+              </div>
+              <div class="customer-info">
+                <h3>Informasi Pelanggan</h3>
+                <div class="input-group">
+                  <label for="customer-name">Nama:</label>
+                  <input type="text" id="customer-name" placeholder="Masukkan nama Anda" required>
+                </div>
+              </div>
+              <div class="optional-items">
+                <h3>Catatan Khusus</h3>
+                <textarea id="special-notes" placeholder="Tambahkan catatan khusus untuk pesanan Anda (opsional)" rows="3"></textarea>
+              </div>
+            </div>
+            <button class="checkout-btn">Pesan Sekarang</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 17`IceCream Developed by Gauz RA</p>
+  </footer>
+
+  <script src="navigation.js"></script>
+  <script src="order.js"></script>
+  <!-- Include qrcodejs library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    // Script untuk memilih kategori berdasarkan query string
+    document.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      const category = params.get('category');
+      if (category) {
+        document.querySelectorAll('.category-btn').forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.dataset.category === category) {
+            btn.classList.add('active');
+          }
+        });
+        document.querySelectorAll('.menu-item').forEach(item => {
+          if (item.dataset.category === category) {
+            item.style.display = 'flex';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html> 
