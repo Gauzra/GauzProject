@@ -87,20 +87,25 @@
     </footer>
 
     <script>
+        // Mengembalikan logika login ke cek username/password hardcode
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const errorMessageElement = document.getElementById('errorMessage');
             
-            // Ganti dengan kredensial yang Anda inginkan
+            errorMessageElement.style.display = 'none'; // Sembunyikan pesan error sebelumnya
+
+            // Ganti dengan kredensial yang Anda inginkan (seperti sebelumnya)
             if (username === 'admin' && password === 'admin123') {
-                // Simpan status login
+                // Simpan status login menggunakan localStorage (seperti sebelumnya)
                 localStorage.setItem('adminLoggedIn', 'true');
                 // Redirect ke halaman admin
                 window.location.href = 'admin.html';
             } else {
-                document.getElementById('errorMessage').style.display = 'block';
+                errorMessageElement.textContent = 'Username atau password salah!';
+                errorMessageElement.style.display = 'block';
             }
         });
     </script>

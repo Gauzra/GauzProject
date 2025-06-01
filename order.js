@@ -18,12 +18,23 @@ let cart = [];
 
 // Fungsi untuk menambahkan item ke keranjang
 function addToCart(name, price, size = null) {
-    const item = {
-        name,
-        price,
-        size
-    };
-    cart.push(item);
+    // Check if item already exists in cart
+    const existingItemIndex = cart.findIndex(item => item.name === name && item.size === size);
+
+    if (existingItemIndex > -1) {
+        // Item exists, increase quantity
+        cart[existingItemIndex].quantity = (cart[existingItemIndex].quantity || 1) + 1;
+    } else {
+        // Item does not exist, add with quantity 1
+        const item = {
+            name,
+            price,
+            size,
+            quantity: 1 // Add quantity property
+        };
+        cart.push(item);
+    }
+
     updateCartDisplay();
 }
 
@@ -35,25 +46,35 @@ function updateCartDisplay() {
 
     cartItems.innerHTML = '';
     cart.forEach((item, index) => {
+        // Ensure item.quantity is a number, default to 1 if not
+        const quantity = item.quantity || 1;
+        const itemTotal = (item.price || 0) * quantity;
+        
         const itemElement = document.createElement('div');
         itemElement.className = 'cart-item';
         itemElement.innerHTML = `
             <div class="item-details">
-                <span>${item.name} ${item.size ? `(${item.size})` : ''}</span>
-                <span>Rp ${item.price}</span>
+                <span>${item.name} ${item.size ? `(${item.size})` : ''} x${quantity}</span>
+                <span>Rp ${itemTotal.toLocaleString('id-ID')}</span>
             </div>
             <button onclick="removeFromCart(${index})" class="remove-btn">×</button>
         `;
         cartItems.appendChild(itemElement);
-        total += item.price;
+        total += itemTotal;
     });
 
-    totalElement.textContent = `Rp ${total}`;
+    totalElement.textContent = `Rp ${total.toLocaleString('id-ID')}`;
 }
 
 // Fungsi untuk menghapus item dari keranjang
 function removeFromCart(index) {
-    cart.splice(index, 1);
+    // Decrease quantity if more than 1
+    if (cart[index].quantity > 1) {
+        cart[index].quantity -= 1;
+    } else {
+        // Remove item if quantity is 1 or less
+        cart.splice(index, 1);
+    }
     updateCartDisplay();
 }
 
@@ -65,17 +86,37 @@ function processOrder() {
     }
 
     const customerName = document.getElementById('customer-name').value.trim();
+    const tableNumber = document.getElementById('table-number').value.trim();
+
     if (!customerName) {
         alert('Mohon masukkan nama Anda!');
         return;
     }
 
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    if (!tableNumber) {
+        alert('Mohon masukkan nomor meja Anda!');
+        return;
+    }
+
+    // Calculate total correctly based on quantity
+    const total = cart.reduce((sum, item) => {
+        const quantity = item.quantity || 1; // Default quantity to 1
+        const price = item.price || 0; // Default price to 0
+        return sum + (price * quantity);
+    }, 0);
+    
     const notes = document.getElementById('special-notes').value;
 
     const order = {
         customerName,
-        items: [...cart],
+        tableNumber: parseInt(tableNumber),
+        // Ensure items array includes quantity for each item
+        items: cart.map(item => ({
+            name: item.name,
+            price: item.price,
+            size: item.size,
+            quantity: item.quantity || 1 // Include quantity, default to 1
+        })),
         total,
         notes,
         status: 'pending',
@@ -89,6 +130,7 @@ function processOrder() {
             cart = [];
             updateCartDisplay();
             document.getElementById('customer-name').value = '';
+            document.getElementById('table-number').value = '';
             document.getElementById('special-notes').value = '';
 
             alert('Pesanan berhasil dibuat! Silakan tunggu konfirmasi dari admin.');
@@ -115,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.classList.add('active');
             
             const category = btn.dataset.category;
-            filterMenuItems(category); // Panggil fungsi filter saat tombol diklik
+            filterMenuItems(category);
         });
     });
 
@@ -127,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const price = parseInt(btn.dataset.price);
             const size = btn.textContent.split(' - ')[0];
 
-            // Hapus seleksi dari tombol ukuran lain
             menuItem.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
         });
